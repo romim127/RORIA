@@ -4381,10 +4381,81 @@
       min-width: 0;
     }
     body.red-operativa-app .network-lab-layout {
-      grid-template-columns: minmax(280px, 340px) minmax(520px, 1fr) minmax(250px, 300px);
-      grid-template-rows: minmax(520px, calc(100vh - 360px)) minmax(132px, 20vh);
+      --roria-left-width: clamp(320px, 22vw, 420px);
+      grid-template-columns: minmax(300px, var(--roria-left-width)) minmax(520px, 1fr) minmax(250px, 300px);
+      grid-template-rows: minmax(520px, calc(100vh - 400px)) minmax(220px, 26vh);
       min-height: calc(100vh - 170px);
       overflow: visible;
+    }
+    body.red-operativa-app .network-lab-palette {
+      min-width: 0;
+      overflow-x: visible;
+      padding-right: 10px;
+      position: relative;
+    }
+    body.red-operativa-app .network-lab-resizer {
+      align-items: center;
+      background: linear-gradient(180deg, #ffffff, #dceaf5);
+      border: 1px solid rgba(15, 54, 89, 0.22);
+      border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(15, 38, 62, 0.16);
+      color: #0d3658;
+      cursor: col-resize;
+      display: flex;
+      font-size: 13px;
+      font-weight: 900;
+      height: 58px;
+      justify-content: center;
+      position: absolute;
+      right: -8px;
+      top: 48%;
+      transform: translateY(-50%);
+      width: 16px;
+      z-index: 25;
+    }
+    body.red-operativa-app .network-lab-resizer:hover,
+    body.red-operativa-app .network-lab-resizer.dragging {
+      background: #0aa8d8;
+      border-color: #13d7ff;
+      color: #ffffff;
+    }
+    body.red-operativa-app .network-lab-palette .network-controls,
+    body.red-operativa-app .network-lab-palette .network-manual-grid,
+    body.red-operativa-app .network-lab-palette .network-relation-grid {
+      grid-template-columns: 1fr;
+    }
+    body.red-operativa-app .network-lab-palette input,
+    body.red-operativa-app .network-lab-palette select,
+    body.red-operativa-app .network-lab-palette textarea,
+    body.red-operativa-app .network-lab-palette button {
+      max-width: 100%;
+      min-width: 0;
+      width: 100%;
+    }
+    body.red-operativa-app .network-lab-palette input[type="file"] {
+      min-height: 44px;
+      overflow: hidden;
+      padding: 7px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.red-operativa-app .network-lab-palette input[type="file"]::file-selector-button {
+      margin-right: 8px;
+      max-width: 140px;
+    }
+    body.red-operativa-app .network-lab-palette .network-guided-import {
+      display: grid;
+      gap: 10px;
+    }
+    body.red-operativa-app .network-lab-palette .network-guided-import .network-controls {
+      background: #f8fbff;
+      border: 1px solid rgba(15, 54, 89, 0.12);
+      border-radius: 6px;
+      padding: 8px;
+    }
+    body.red-operativa-app .network-lab-palette #networkUniversalStageBtn,
+    body.red-operativa-app .network-lab-palette #networkUniversalApplyBtn {
+      min-height: 42px;
     }
     body.red-operativa-app .network-lab-palette,
     body.red-operativa-app .network-lab-inspector {
@@ -4402,15 +4473,30 @@
       min-height: 520px;
     }
     body.red-operativa-app .network-lab-tray {
-      grid-template-columns: minmax(260px, 1.2fr) minmax(240px, 1fr) minmax(220px, 0.85fr) minmax(240px, 0.9fr);
+      grid-template-columns: 1fr;
+      grid-auto-rows: max-content;
+      max-height: none;
+      min-height: 220px;
       overflow: auto;
+    }
+    body.red-operativa-app .network-lab-tray .network-drawer {
+      grid-column: 1 / -1;
+    }
+    body.red-operativa-app .network-lab-tray .network-drawer:not([open]) .network-drawer-body {
+      display: none;
+    }
+    body.red-operativa-app .network-lab-tray .network-drawer-body {
+      max-height: clamp(170px, 22vh, 280px);
+    }
+    body.red-operativa-app .network-evidence-board {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     }
     body.red-operativa-app .network-lab-entity-shelf {
       min-height: 96px;
     }
     @media (max-width: 1500px) {
       body.red-operativa-app .network-lab-layout {
-        grid-template-columns: minmax(260px, 320px) minmax(480px, 1fr) minmax(230px, 280px);
+        grid-template-columns: minmax(300px, var(--roria-left-width, 360px)) minmax(480px, 1fr) minmax(230px, 280px);
       }
       body.red-operativa-app .network-lab-toolbar {
         max-height: 118px;
@@ -4449,6 +4535,9 @@
       body.red-operativa-app .network-lab-palette,
       body.red-operativa-app .network-lab-inspector {
         max-height: none;
+      }
+      body.red-operativa-app .network-lab-resizer {
+        display: none;
       }
       body.red-operativa-app .network-lab-canvas .network-canvas {
         min-height: min(72vh, 620px);
@@ -18708,8 +18797,19 @@ Select module [0/1/7/8] (1): _</pre>
         <button type="button" data-network-lab-view="temporal">Timeline<span>historial</span></button>`;
       const layout = document.createElement("div");
       layout.className = "network-studio-layout network-lab-layout";
+      const savedLeftWidth = Number(localStorage.getItem("roria_network_left_width") || 0);
+      if (savedLeftWidth) {
+        const clamped = Math.max(300, Math.min(520, savedLeftWidth));
+        layout.style.setProperty("--roria-left-width", `${clamped}px`);
+      }
       const left = document.createElement("aside");
       left.className = "network-left-rail network-lab-palette";
+      const leftResizer = document.createElement("button");
+      leftResizer.type = "button";
+      leftResizer.className = "network-lab-resizer";
+      leftResizer.title = "Arrastrar para agrandar o achicar el panel izquierdo";
+      leftResizer.setAttribute("aria-label", "Redimensionar panel izquierdo");
+      leftResizer.textContent = "⋮";
       const center = document.createElement("main");
       center.className = "network-canvas-deck network-lab-canvas";
       const right = document.createElement("aside");
@@ -18985,6 +19085,27 @@ Select module [0/1/7/8] (1): _</pre>
         if (view === "geografico" && networkStatusEl) networkStatusEl.textContent = "Vista geografica: usa el modulo Mapa de Calor para ubicacion; esta hoja mantiene relaciones.";
         if (view === "relacional" && networkStatusEl) networkStatusEl.textContent = "Vista relacional activa.";
       });
+      leftResizer.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        leftResizer.classList.add("dragging");
+        leftResizer.setPointerCapture(event.pointerId);
+        const move = (moveEvent) => {
+          const rect = layout.getBoundingClientRect();
+          const nextWidth = Math.max(300, Math.min(520, Math.round(moveEvent.clientX - rect.left)));
+          layout.style.setProperty("--roria-left-width", `${nextWidth}px`);
+          localStorage.setItem("roria_network_left_width", String(nextWidth));
+        };
+        const up = () => {
+          leftResizer.classList.remove("dragging");
+          leftResizer.releasePointerCapture?.(event.pointerId);
+          leftResizer.removeEventListener("pointermove", move);
+          leftResizer.removeEventListener("pointerup", up);
+          leftResizer.removeEventListener("pointercancel", up);
+        };
+        leftResizer.addEventListener("pointermove", move);
+        leftResizer.addEventListener("pointerup", up);
+        leftResizer.addEventListener("pointercancel", up);
+      });
       const prepareShelfEntity = (type, category = "") => {
         if (!type) return;
         selectManualEntityPreset(type, category || networkManualCategoryEl?.value || "");
@@ -19095,12 +19216,13 @@ Select module [0/1/7/8] (1): _</pre>
       append(scenarios, sheetStrip);
 
       append(left, drawer("Importar archivo y columnas", [guidedImport], true, "import"));
-      append(left, drawer("Paleta de entidades", [entityControls], true, "entities"));
+      append(left, drawer("Paleta de entidades", [entityControls], false, "entities"));
       append(left, drawer("Flujo de trabajo", [header, modes, modeStatus, flow], false, "flow"));
+      append(left, leftResizer);
 
       append(tray, trayTabs);
       append(tray, drawer("Histories y evidencia", [evidenceBoard, evidenceHelp, buildControls, filesControls, filesList], true, "evidence"));
-      append(tray, drawer("Relaciones y tabla tecnica", [relationControls, edgesDetails], true, "relations"));
+      append(tray, drawer("Relaciones y tabla tecnica", [relationControls, edgesDetails], false, "relations"));
       append(tray, drawer("Filtros y capas", [entityFilterControls, cardControls, layerControls], false, "filters"));
       append(tray, drawer("Expediente y equipo", [caseControls, caseSeal, casesList, taskAlert, shareControls, tasksList, collabPanel, chatNote], false, "case"));
 
