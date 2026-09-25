@@ -4286,7 +4286,17 @@
     }
     body.relational-standalone {
       background: #f2f6fb;
-      overflow: hidden;
+      overflow: auto;
+    }
+    body.red-operativa-app,
+    body.red-operativa-app * {
+      box-sizing: border-box;
+    }
+    body.red-operativa-app .page {
+      margin: 0;
+      max-width: none;
+      min-height: 100vh;
+      width: 100%;
     }
     body.relational-standalone #loginModal,
     body.relational-standalone .sidebar,
@@ -4333,6 +4343,122 @@
     }
     body.relational-standalone #tabNetwork .network-workbench {
       margin: 0;
+    }
+    body.red-operativa-app .network-workbench.studio-ui,
+    body.red-operativa-app .network-studio-shell {
+      gap: 0;
+      min-height: 100vh;
+      width: 100%;
+    }
+    body.red-operativa-app .network-lab-chrome {
+      height: auto;
+      min-height: 100vh;
+      overflow: visible;
+    }
+    body.red-operativa-app .network-lab-menubar,
+    body.red-operativa-app .network-lab-toolbar,
+    body.red-operativa-app .network-lab-scenarios {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+    }
+    body.red-operativa-app .network-lab-menubar {
+      padding-right: 14px;
+    }
+    body.red-operativa-app .network-lab-toolbar {
+      align-content: start;
+      max-height: 92px;
+      position: sticky;
+      top: 0;
+    }
+    body.red-operativa-app .network-lab-toolbar .network-main-actions,
+    body.red-operativa-app .network-lab-toolbar .network-canvas-tools,
+    body.red-operativa-app .network-lab-toolbar .network-annotation-toolbar {
+      flex: 0 0 auto;
+    }
+    body.red-operativa-app .network-lab-scenarios {
+      flex-wrap: nowrap;
+      min-width: 0;
+    }
+    body.red-operativa-app .network-lab-layout {
+      grid-template-columns: minmax(280px, 340px) minmax(520px, 1fr) minmax(250px, 300px);
+      grid-template-rows: minmax(520px, calc(100vh - 360px)) minmax(132px, 20vh);
+      min-height: calc(100vh - 170px);
+      overflow: visible;
+    }
+    body.red-operativa-app .network-lab-palette,
+    body.red-operativa-app .network-lab-inspector {
+      max-height: calc(100vh - 180px);
+      overscroll-behavior: contain;
+    }
+    body.red-operativa-app .network-lab-canvas {
+      min-width: 0;
+    }
+    body.red-operativa-app .network-lab-canvas .network-suite-canvas-area {
+      grid-template-rows: auto auto auto auto minmax(420px, 1fr) auto auto;
+      min-height: 0;
+    }
+    body.red-operativa-app .network-lab-canvas .network-canvas {
+      min-height: 520px;
+    }
+    body.red-operativa-app .network-lab-tray {
+      grid-template-columns: minmax(260px, 1.2fr) minmax(240px, 1fr) minmax(220px, 0.85fr) minmax(240px, 0.9fr);
+      overflow: auto;
+    }
+    body.red-operativa-app .network-lab-entity-shelf {
+      min-height: 96px;
+    }
+    @media (max-width: 1500px) {
+      body.red-operativa-app .network-lab-layout {
+        grid-template-columns: minmax(260px, 320px) minmax(480px, 1fr) minmax(230px, 280px);
+      }
+      body.red-operativa-app .network-lab-toolbar {
+        max-height: 118px;
+      }
+    }
+    @media (max-width: 1280px) {
+      body.red-operativa-app .network-lab-layout {
+        grid-template-areas:
+          "palette canvas"
+          "palette inspector"
+          "tray tray";
+        grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+        grid-template-rows: minmax(520px, auto) auto minmax(150px, auto);
+      }
+      body.red-operativa-app .network-lab-inspector {
+        max-height: 260px;
+      }
+      body.red-operativa-app .network-lab-tray {
+        grid-template-columns: repeat(2, minmax(260px, 1fr));
+      }
+    }
+    @media (max-width: 980px) {
+      body.red-operativa-app .network-lab-toolbar {
+        max-height: none;
+        position: static;
+      }
+      body.red-operativa-app .network-lab-layout {
+        grid-template-areas:
+          "canvas"
+          "palette"
+          "inspector"
+          "tray";
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+      }
+      body.red-operativa-app .network-lab-palette,
+      body.red-operativa-app .network-lab-inspector {
+        max-height: none;
+      }
+      body.red-operativa-app .network-lab-canvas .network-canvas {
+        min-height: min(72vh, 620px);
+      }
+      body.red-operativa-app .network-lab-tray {
+        grid-template-columns: 1fr;
+      }
+      body.red-operativa-app .network-lab-entity-shelf {
+        min-height: 88px;
+      }
     }
     @media (max-width: 900px) {
       .network-suite-header { grid-template-columns: 1fr; }
