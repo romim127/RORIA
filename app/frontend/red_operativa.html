@@ -3025,11 +3025,91 @@
       font-weight: 800;
       gap: 6px;
     }
+    .network-import-flow {
+      display: grid;
+      gap: 6px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin-top: 8px;
+    }
+    .network-import-flow span {
+      align-items: center;
+      border: 1px solid rgba(18, 216, 255, 0.18);
+      border-radius: 8px;
+      color: #8fa3b6;
+      display: flex;
+      font-size: 10px;
+      font-weight: 900;
+      gap: 5px;
+      justify-content: center;
+      letter-spacing: 0.06em;
+      min-height: 30px;
+      padding: 5px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .network-import-flow b {
+      align-items: center;
+      background: rgba(18, 216, 255, 0.10);
+      border: 1px solid rgba(18, 216, 255, 0.24);
+      border-radius: 999px;
+      color: #12d8ff;
+      display: inline-flex;
+      height: 18px;
+      justify-content: center;
+      min-width: 18px;
+    }
+    .network-import-flow span.active {
+      background: rgba(18, 216, 255, 0.12);
+      border-color: rgba(18, 216, 255, 0.52);
+      color: #dffaff;
+      box-shadow: 0 0 0 1px rgba(18, 216, 255, 0.10);
+    }
+    .network-import-flow span.done {
+      background: rgba(86, 211, 100, 0.09);
+      border-color: rgba(86, 211, 100, 0.32);
+      color: #b7f3c0;
+    }
+    .network-import-file-summary {
+      background: rgba(18, 216, 255, 0.08);
+      border: 1px solid rgba(18, 216, 255, 0.22);
+      border-radius: 10px;
+      color: #dffaff;
+      display: grid;
+      font-size: 12px;
+      gap: 5px;
+      line-height: 1.4;
+      margin-top: 8px;
+      padding: 9px 10px;
+    }
+    .network-import-file-summary strong {
+      color: #ffffff;
+      font-size: 12px;
+    }
+    .network-import-file-summary span {
+      color: #9fb6c7;
+      font-size: 11px;
+    }
     .network-import-review-card {
       border: 1px solid rgba(18, 216, 255, 0.20);
       border-radius: 10px;
       background: rgba(0, 8, 14, 0.58);
       padding: 10px;
+    }
+    .network-import-card-head {
+      display: grid;
+      gap: 4px;
+    }
+    .network-import-card-head strong {
+      overflow-wrap: anywhere;
+    }
+    .network-import-stage-label {
+      color: #12d8ff;
+      display: block;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      margin: 10px 0 5px;
+      text-transform: uppercase;
     }
     .network-import-review-grid {
       display: grid;
@@ -3106,6 +3186,17 @@
     .network-lab-palette .network-import-column-name,
     .network-lab-palette .network-import-column-sample {
       white-space: normal;
+    }
+    .network-import-apply-hint {
+      background: linear-gradient(180deg, rgba(86, 211, 100, 0.10), rgba(18, 216, 255, 0.06));
+      border: 1px solid rgba(86, 211, 100, 0.28);
+      border-radius: 8px;
+      color: #0d3658;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-top: 9px;
+      padding: 8px;
     }
     .network-lab-toolbar button[data-network-delete-selection][data-lab-icon="1"] {
       background: linear-gradient(180deg, #fff7f7, #fee2e2);
@@ -4493,6 +4584,36 @@
       border-radius: 6px;
       padding: 8px;
     }
+    body.red-operativa-app .network-lab-palette .network-import-flow {
+      grid-template-columns: 1fr;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-flow span {
+      background: #f6fbff;
+      border-color: rgba(18, 116, 180, 0.20);
+      color: #53687b;
+      justify-content: flex-start;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-flow span.active {
+      background: #e8f8ff;
+      border-color: rgba(18, 116, 180, 0.54);
+      color: #0d3658;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-flow span.done {
+      background: #eefaf0;
+      border-color: rgba(42, 157, 74, 0.34);
+      color: #176436;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-file-summary {
+      background: #f6fbff;
+      border-color: rgba(18, 116, 180, 0.22);
+      color: #0d2235;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-file-summary strong {
+      color: #0d3658;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-file-summary span {
+      color: #53687b;
+    }
     body.red-operativa-app .network-lab-palette #networkUniversalStageBtn,
     body.red-operativa-app .network-lab-palette #networkUniversalApplyBtn {
       min-height: 42px;
@@ -4537,6 +4658,9 @@
     body.red-operativa-app .network-lab-palette .network-import-review-card strong {
       color: #0d3658;
     }
+    body.red-operativa-app .network-lab-palette .network-import-stage-label {
+      color: #0a78a3;
+    }
     body.red-operativa-app .network-lab-palette .network-import-review-card .text-muted,
     body.red-operativa-app .network-lab-palette .network-import-column-sample {
       color: #53687b;
@@ -4548,6 +4672,11 @@
       background: #eef7ff;
       border-color: rgba(18, 116, 180, 0.24);
       color: #0d3658;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-apply-hint {
+      background: #f0fbf4;
+      border-color: rgba(42, 157, 74, 0.28);
+      color: #176436;
     }
     body.red-operativa-app .network-lab-palette::-webkit-scrollbar,
     body.red-operativa-app .network-lab-palette *::-webkit-scrollbar {
@@ -6075,6 +6204,13 @@ Select module [0/1/7/8] (1): _</pre>
                     </div>
                     <span class="network-guided-badge">Staging seguro</span>
                   </div>
+                  <div id="networkImportFlow" class="network-import-flow" aria-label="Flujo de carga guiada">
+                    <span data-network-import-step="file" class="active"><b>1</b> Archivo</span>
+                    <span data-network-import-step="columns"><b>2</b> Columnas</span>
+                    <span data-network-import-step="mapping"><b>3</b> Mapeo</span>
+                    <span data-network-import-step="preview"><b>4</b> Vista previa</span>
+                    <span data-network-import-step="canvas"><b>5</b> Canvas</span>
+                  </div>
                   <div class="network-controls">
                     <input id="networkUniversalFiles" type="file" multiple>
                     <select id="networkUniversalType" title="Tipo de evidencia">
@@ -6090,6 +6226,7 @@ Select module [0/1/7/8] (1): _</pre>
                     <button id="networkUniversalClearBtn" type="button" class="hidden">Descartar analisis</button>
                     <span id="networkUniversalStatus" class="status m-0"></span>
                   </div>
+                  <div id="networkUniversalFileSummary" class="network-import-file-summary hidden"></div>
                   <div id="networkUniversalOptions" class="network-import-options hidden">
                     <strong>Entidades a incorporar</strong>
                     <label><input data-network-import-type="imsi" type="checkbox" checked> IMSI</label>
@@ -7071,6 +7208,8 @@ Select module [0/1/7/8] (1): _</pre>
     const networkUniversalStatusEl = document.getElementById("networkUniversalStatus");
     const networkUniversalOptionsEl = document.getElementById("networkUniversalOptions");
     const networkUniversalPreviewEl = document.getElementById("networkUniversalPreview");
+    const networkUniversalFileSummaryEl = document.getElementById("networkUniversalFileSummary");
+    const networkImportFlowEl = document.getElementById("networkImportFlow");
 
     const STORAGE_TOKEN = "skyeye_token";
     const STORAGE_USER = "skyeye_user";
@@ -16125,6 +16264,51 @@ Select module [0/1/7/8] (1): _</pre>
       return data;
     }
 
+    function formatNetworkImportBytes(bytes) {
+      const value = Number(bytes || 0);
+      if (!Number.isFinite(value) || value <= 0) return "0 KB";
+      const units = ["B", "KB", "MB", "GB"];
+      let size = value;
+      let unitIndex = 0;
+      while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex += 1;
+      }
+      return `${size.toFixed(unitIndex ? 1 : 0)} ${units[unitIndex]}`;
+    }
+
+    function setNetworkImportStep(activeStep) {
+      if (!networkImportFlowEl) return;
+      const order = ["file", "columns", "mapping", "preview", "canvas"];
+      const activeIndex = Math.max(0, order.indexOf(activeStep));
+      networkImportFlowEl.querySelectorAll("[data-network-import-step]").forEach((el) => {
+        const step = el.dataset.networkImportStep || "file";
+        const index = Math.max(0, order.indexOf(step));
+        el.classList.toggle("active", step === activeStep);
+        el.classList.toggle("done", index < activeIndex);
+      });
+    }
+
+    function renderNetworkImportFileSummary(files, typeLabel = "") {
+      if (!networkUniversalFileSummaryEl) return;
+      const selectedFiles = Array.from(files || []);
+      if (!selectedFiles.length) {
+        networkUniversalFileSummaryEl.classList.add("hidden");
+        networkUniversalFileSummaryEl.innerHTML = "";
+        setNetworkImportStep("file");
+        return;
+      }
+      const names = selectedFiles.slice(0, 3).map((file) => escapeHtml(file.name || "archivo")).join(", ");
+      const extra = selectedFiles.length > 3 ? ` y ${selectedFiles.length - 3} mas` : "";
+      const bytes = selectedFiles.reduce((acc, file) => acc + Number(file.size || 0), 0);
+      networkUniversalFileSummaryEl.innerHTML = `
+        <strong>${selectedFiles.length} archivo(s) seleccionado(s)</strong>
+        <span>${names}${extra}</span>
+        <span>Tipo de carga: ${escapeHtml(typeLabel || networkUniversalTypeLabel(networkUniversalTypeEl?.value || "evidence"))} - Tamano total: ${formatNetworkImportBytes(bytes)}</span>`;
+      networkUniversalFileSummaryEl.classList.remove("hidden");
+      setNetworkImportStep("file");
+    }
+
     function selectedNetworkImportTypes() {
       const selected = new Set(["history", "evidence"]);
       document.querySelectorAll("[data-network-import-type]").forEach((input) => {
@@ -16374,6 +16558,7 @@ Select module [0/1/7/8] (1): _</pre>
       const typeLabel = networkUniversalTypeLabel(networkUniversalTypeEl?.value || "evidence");
       renderNetworkImportReview(pendingNetworkImports, typeLabel);
       if (networkUniversalStatusEl) networkUniversalStatusEl.textContent = "Mapa de columnas actualizado. Revisa y confirma la incorporacion al canvas.";
+      setNetworkImportStep("mapping");
     }
 
     function renderNetworkImportReview(imports, typeLabel) {
@@ -16395,6 +16580,7 @@ Select module [0/1/7/8] (1): _</pre>
           .slice(0, 18)
           .map((col) => `<span class="network-import-chip">${escapeHtml(String(col || ""))}</span>`)
           .join("");
+        const rowsCount = Array.isArray(item?.sample_rows) ? item.sample_rows.length : 0;
         const mappingRows = (Array.isArray(item?.columns) ? item.columns : [])
           .slice(0, 24)
           .map((col) => {
@@ -16410,21 +16596,29 @@ Select module [0/1/7/8] (1): _</pre>
           }).join("");
         return `
           <li class="network-import-review-card">
-            <strong>${escapeHtml(fileName)}</strong>
-            <br><span class="text-muted">${escapeHtml(typeLabel)} analizado: ${escapeHtml(String(summary.nodes || 0))} entidad(es), ${escapeHtml(String(summary.edges || 0))} vinculo(s), ${escapeHtml(String(summary.columns || 0))} columna(s).</span>
-            ${hash}
+            <div class="network-import-card-head">
+              <span class="network-import-stage-label">1. Archivo cargado</span>
+              <strong>${escapeHtml(fileName)}</strong>
+              <span class="text-muted">${escapeHtml(typeLabel)} analizado: ${escapeHtml(String(summary.nodes || 0))} entidad(es), ${escapeHtml(String(summary.edges || 0))} vinculo(s), ${escapeHtml(String(summary.columns || 0))} columna(s).</span>
+              ${hash}
+            </div>
+            <span class="network-import-stage-label">2. Columnas detectadas</span>
+            <div>${columns || '<span class="text-muted">Sin columnas tabulares detectadas.</span>'}</div>
             ${mappingRows ? `
               <div class="network-import-column-map">
-                <div class="network-import-column-map-title">Mapa manual de columnas <span>elige que entra al canvas</span></div>
+                <div class="network-import-column-map-title">3. Mapeo de columnas <span>corregi el rol antes de aplicar</span></div>
                 ${mappingRows}
               </div>` : ""}
+            <span class="network-import-stage-label">4. Vista previa operativa</span>
             <div class="network-import-review-grid">
               <div><span class="text-muted">Roles detectados</span><br>${roles || '<span class="text-muted">Sin roles automaticos detectados.</span>'}</div>
-              <div><span class="text-muted">Columnas leidas</span><br>${columns || '<span class="text-muted">Sin columnas tabulares.</span>'}</div>
+              <div><span class="text-muted">Muestra leida</span><br><span class="network-import-chip">${escapeHtml(String(rowsCount))} fila(s) de muestra</span></div>
             </div>
+            <div class="network-import-apply-hint">5. Si el mapeo esta correcto, usa "Aplicar al canvas" para incorporar estas entidades como borrador editable.</div>
           </li>`;
       }).join("");
       networkUniversalPreviewEl.classList.remove("hidden");
+      setNetworkImportStep("preview");
     }
 
     function clearNetworkImportReview(message) {
@@ -16436,7 +16630,12 @@ Select module [0/1/7/8] (1): _</pre>
       if (networkUniversalOptionsEl) networkUniversalOptionsEl.classList.add("hidden");
       if (networkUniversalApplyBtn) networkUniversalApplyBtn.classList.add("hidden");
       if (networkUniversalClearBtn) networkUniversalClearBtn.classList.add("hidden");
+      if (networkUniversalFileSummaryEl) {
+        networkUniversalFileSummaryEl.innerHTML = "";
+        networkUniversalFileSummaryEl.classList.add("hidden");
+      }
       if (networkUniversalStatusEl) networkUniversalStatusEl.textContent = message || "";
+      setNetworkImportStep("file");
     }
 
     function applyNetworkImportReview() {
@@ -16475,6 +16674,7 @@ Select module [0/1/7/8] (1): _</pre>
       });
       clearNetworkImportReview(message);
       if (networkUniversalFilesEl) networkUniversalFilesEl.value = "";
+      setNetworkImportStep("canvas");
       refreshNetworkWorkspaceView(message);
     }
 
@@ -16487,6 +16687,8 @@ Select module [0/1/7/8] (1): _</pre>
       const evidenceType = String(networkUniversalTypeEl?.value || "evidence");
       const typeLabel = networkUniversalTypeLabel(evidenceType);
       if (networkUniversalStageBtn) networkUniversalStageBtn.disabled = true;
+      renderNetworkImportFileSummary(selectedFiles, typeLabel);
+      setNetworkImportStep("columns");
       if (networkUniversalStatusEl) networkUniversalStatusEl.textContent = "Analizando columnas y entidades detectables...";
       const interpretedItems = [];
       try {
@@ -16503,10 +16705,13 @@ Select module [0/1/7/8] (1): _</pre>
         if (networkUniversalOptionsEl) networkUniversalOptionsEl.classList.remove("hidden");
         if (networkUniversalApplyBtn) networkUniversalApplyBtn.classList.remove("hidden");
         if (networkUniversalClearBtn) networkUniversalClearBtn.classList.remove("hidden");
-        if (networkUniversalStatusEl) networkUniversalStatusEl.textContent = `${interpretedItems.length} archivo(s) analizado(s). Revisa entidades y confirma la incorporacion al canvas.`;
+        if (networkUniversalApplyBtn) networkUniversalApplyBtn.textContent = "Aplicar al canvas";
+        if (networkUniversalClearBtn) networkUniversalClearBtn.textContent = "Limpiar carga";
+        if (networkUniversalStatusEl) networkUniversalStatusEl.textContent = `${interpretedItems.length} archivo(s) analizado(s). Revisa columnas, ajusta el mapeo si hace falta y aplica al canvas.`;
         openNetworkStudioDrawer("import");
       } catch (err) {
         if (networkUniversalStatusEl) networkUniversalStatusEl.textContent = `Error: ${err.message || err}`;
+        setNetworkImportStep("file");
       } finally {
         if (networkUniversalStageBtn) networkUniversalStageBtn.disabled = false;
       }
@@ -19518,6 +19723,16 @@ Select module [0/1/7/8] (1): _</pre>
     if (networkUniversalStageBtn) networkUniversalStageBtn.addEventListener("click", stageNetworkUniversalFiles);
     if (networkUniversalApplyBtn) networkUniversalApplyBtn.addEventListener("click", applyNetworkImportReview);
     if (networkUniversalClearBtn) networkUniversalClearBtn.addEventListener("click", () => clearNetworkImportReview("Analisis descartado. No se incorporo nada al canvas."));
+    if (networkUniversalFilesEl) {
+      networkUniversalFilesEl.addEventListener("change", () => {
+        renderNetworkImportFileSummary(networkUniversalFilesEl.files || [], networkUniversalTypeLabel(networkUniversalTypeEl?.value || "evidence"));
+      });
+    }
+    if (networkUniversalTypeEl) {
+      networkUniversalTypeEl.addEventListener("change", () => {
+        renderNetworkImportFileSummary(networkUniversalFilesEl?.files || [], networkUniversalTypeLabel(networkUniversalTypeEl.value || "evidence"));
+      });
+    }
     if (networkUniversalPreviewEl) {
       networkUniversalPreviewEl.addEventListener("change", (event) => {
         const select = event.target.closest("select[data-network-import-map]");
@@ -19525,6 +19740,7 @@ Select module [0/1/7/8] (1): _</pre>
         updateNetworkImportColumnRole(select.getAttribute("data-network-import-map") || "0", select.getAttribute("data-network-import-column") || "", select.value || "ignore");
       });
     }
+    setNetworkImportStep("file");
     document.querySelectorAll(".network-entity-preset").forEach((btn) => {
       btn.addEventListener("click", () => {
         selectManualEntityPreset(btn.dataset.networkEntityType || "person", btn.dataset.networkEntityCategory || "");
