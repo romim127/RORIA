@@ -1,0 +1,11 @@
+{
+    "suite_name": "NEXA Digital Forensic Suite",
+    "edition": "Ministerio",
+    "version": "0.5.1 Alpha FIXED",
+    "build": "0005.1",
+    "organization": "DEPARTAMENTO DE TECNOLOGÍAS ESPECIALES Y DESPLIEGUE TÁCTICO",
+    "default_equipment": "GUARDIAN",
+    "default_mode": "RELEASE",
+    "default_antennas": "DIRECCIONALES",
+    "rf_engine": "modules/rf_analyzer/nexa_rf_analyzer_v2.py"
+}

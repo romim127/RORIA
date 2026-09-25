@@ -1,0 +1,64 @@
+name: Post Deploy Smoke Test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  SMOKE_BASE_URL: ${{ secrets.SMOKE_BASE_URL }}
+  SMOKE_USERNAME: ${{ secrets.SMOKE_USERNAME }}
+  SMOKE_PASSWORD: ${{ secrets.SMOKE_PASSWORD }}
+
+concurrency:
+  group: post-deploy-smoke-main
+  cancel-in-progress: true
+
+jobs:
+  smoke-test:
+    name: Smoke Test Production
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Wait for Render deployment
+        shell: pwsh
+        run: |
+          $url = $env:SMOKE_BASE_URL
+          if ([string]::IsNullOrWhiteSpace($url)) { $url = "https://sistema-inhibidor-skyeye.onrender.com" }
+          Write-Host "Esperando a que Render levante el servicio en $url..."
+          
+          $maxRetries = 24  # Hasta 6 minutos de espera maxima (24 * 15s)
+          $ready = $false
+          for ($i = 1; $i -le $maxRetries; $i++) {
+            try {
+              $res = Invoke-RestMethod -Uri "$url/api/health" -Method GET -TimeoutSec 10 -ErrorAction Stop
+              if ($res.status -eq "ok") {
+                Write-Host "Servicio UP y Saludable! (Intento $i)"
+                $ready = $true
+                break
+              }
+            } catch {
+              Write-Host "Servicio aun no listo (Intento $i/$maxRetries). Reintentando en 15s..."
+            }
+            Start-Sleep -Seconds 15
+          }
+          if (-not $ready) {
+            Write-Host "Error: El servicio no respondio en el tiempo esperado."
+            exit 1
+          }
+
+      - name: Run post-deploy smoke test
+        shell: pwsh
+        run: |
+          $invokeArgs = @{}
+          if (-not [string]::IsNullOrWhiteSpace($env:SMOKE_BASE_URL)) { $invokeArgs["BaseUrl"] = $env:SMOKE_BASE_URL }
+          if (-not [string]::IsNullOrWhiteSpace($env:SMOKE_USERNAME)) { $invokeArgs["Username"] = $env:SMOKE_USERNAME }
+          if (-not [string]::IsNullOrWhiteSpace($env:SMOKE_PASSWORD)) { $invokeArgs["UserSecret"] = $env:SMOKE_PASSWORD }
+          
+          Write-Host "Ejecutando smoke test..."
+          .\smoke_test_post_deploy.ps1 @invokeArgs

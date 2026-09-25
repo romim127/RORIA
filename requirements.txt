@@ -1,0 +1,17 @@
+﻿psycopg2-binary
+requests
+python-dotenv
+pandas
+numpy
+pyproj
+fastapi
+uvicorn
+python-multipart
+shapely
+docxtpl
+python-docx
+matplotlib
+rich
+pypdf
+openpyxl
+xlrd
