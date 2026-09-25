@@ -4404,27 +4404,26 @@
       color: #0d3658;
       cursor: col-resize;
       display: flex;
-      font-size: 0;
+      font-size: 14px;
       font-weight: 900;
-      height: 64px;
+      height: 72px;
       justify-content: center;
       min-width: 0 !important;
-      opacity: 0.38;
+      opacity: 0.74;
       padding: 0 !important;
       position: absolute;
       right: -5px;
       top: 48%;
       transform: translateY(-50%);
-      width: 8px !important;
+      width: 10px !important;
       z-index: 25;
     }
     body.red-operativa-app .network-lab-resizer::before {
-      content: "›";
-      font-size: 15px;
+      content: "‹";
+      font-size: 16px;
       line-height: 1;
-      opacity: 0;
-      transform: rotate(0deg);
-      transition: opacity 0.12s ease;
+      opacity: 0.8;
+      transition: opacity 0.12s ease, transform 0.12s ease;
     }
     body.red-operativa-app .network-lab-resizer:hover,
     body.red-operativa-app .network-lab-resizer.dragging {
@@ -4436,6 +4435,28 @@
     }
     body.red-operativa-app .network-lab-resizer:hover::before,
     body.red-operativa-app .network-lab-resizer.dragging::before {
+      opacity: 1;
+    }
+    body.red-operativa-app .network-lab-layout.left-collapsed {
+      grid-template-columns: 28px minmax(620px, 1fr) minmax(250px, 300px);
+    }
+    body.red-operativa-app .network-lab-layout.left-collapsed .network-lab-palette {
+      overflow: visible;
+      padding: 0;
+    }
+    body.red-operativa-app .network-lab-layout.left-collapsed .network-lab-palette > :not(.network-lab-resizer) {
+      display: none !important;
+    }
+    body.red-operativa-app .network-lab-layout.left-collapsed .network-lab-resizer {
+      background: #0aa8d8;
+      color: #ffffff;
+      opacity: 1;
+      right: 5px;
+      top: 50%;
+      width: 18px !important;
+    }
+    body.red-operativa-app .network-lab-layout.left-collapsed .network-lab-resizer::before {
+      content: "›";
       opacity: 1;
     }
     body.red-operativa-app .network-lab-palette .network-controls,
@@ -18883,14 +18904,27 @@ Select module [0/1/7/8] (1): _</pre>
         const clamped = Math.max(300, Math.min(520, savedLeftWidth));
         layout.style.setProperty("--roria-left-width", `${clamped}px`);
       }
+      const setLeftCollapsed = (collapsed) => {
+        layout.classList.toggle("left-collapsed", !!collapsed);
+        localStorage.setItem("roria_network_left_collapsed", collapsed ? "1" : "0");
+        if (leftResizer) {
+          leftResizer.title = collapsed ? "Mostrar panel izquierdo" : "Ocultar panel izquierdo / arrastrar para cambiar ancho";
+          leftResizer.setAttribute("aria-label", leftResizer.title);
+        }
+      };
       const left = document.createElement("aside");
       left.className = "network-left-rail network-lab-palette";
       const leftResizer = document.createElement("button");
       leftResizer.type = "button";
       leftResizer.className = "network-lab-resizer";
-      leftResizer.title = "Arrastrar para agrandar o achicar el panel izquierdo";
-      leftResizer.setAttribute("aria-label", "Redimensionar panel izquierdo");
+      leftResizer.title = "Ocultar panel izquierdo / arrastrar para cambiar ancho";
+      leftResizer.setAttribute("aria-label", "Ocultar panel izquierdo / arrastrar para cambiar ancho");
       leftResizer.textContent = "⋮";
+      if (localStorage.getItem("roria_network_left_collapsed") === "1") {
+        layout.classList.add("left-collapsed");
+        leftResizer.title = "Mostrar panel izquierdo";
+        leftResizer.setAttribute("aria-label", "Mostrar panel izquierdo");
+      }
       const center = document.createElement("main");
       center.className = "network-canvas-deck network-lab-canvas";
       const right = document.createElement("aside");
@@ -19170,7 +19204,12 @@ Select module [0/1/7/8] (1): _</pre>
         event.preventDefault();
         leftResizer.classList.add("dragging");
         leftResizer.setPointerCapture(event.pointerId);
+        const startX = event.clientX;
+        let dragged = false;
         const move = (moveEvent) => {
+          if (Math.abs(moveEvent.clientX - startX) < 4) return;
+          dragged = true;
+          if (layout.classList.contains("left-collapsed")) setLeftCollapsed(false);
           const rect = layout.getBoundingClientRect();
           const nextWidth = Math.max(300, Math.min(520, Math.round(moveEvent.clientX - rect.left)));
           layout.style.setProperty("--roria-left-width", `${nextWidth}px`);
@@ -19179,6 +19218,7 @@ Select module [0/1/7/8] (1): _</pre>
         const up = () => {
           leftResizer.classList.remove("dragging");
           leftResizer.releasePointerCapture?.(event.pointerId);
+          if (!dragged) setLeftCollapsed(!layout.classList.contains("left-collapsed"));
           leftResizer.removeEventListener("pointermove", move);
           leftResizer.removeEventListener("pointerup", up);
           leftResizer.removeEventListener("pointercancel", up);
