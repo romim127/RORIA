@@ -4640,7 +4640,7 @@ def septier_operational_network_case_delete(case_id: str, user=Depends(_require_
 NETWORK_ATTACHMENT_EXTENSIONS = {
     ".jpg", ".jpeg", ".png", ".webp", ".gif",
     ".pdf", ".doc", ".docx", ".xls", ".xlsx",
-    ".csv", ".txt", ".json", ".kml",
+    ".csv", ".tsv", ".txt", ".json", ".kml",
 }
 
 
@@ -4658,31 +4658,86 @@ def _septier_network_import_dir() -> Path:
 
 def _network_import_read_rows(raw: bytes, suffix: str, filename: str) -> Tuple[List[str], List[Dict[str, str]], str]:
     suffix = str(suffix or "").lower()
-    if suffix in {".csv", ".txt"}:
+    if suffix in {".csv", ".tsv", ".txt"}:
         from io import BytesIO
         import pandas as pd
 
-        for encoding in ("utf-8-sig", "latin-1"):
+        last_error = ""
+        encodings = ("utf-8-sig", "utf-16", "latin-1")
+        separators = [None, "\t", ";", ",", "|"]
+        for encoding in encodings:
+            decoded_text = ""
             try:
-                if suffix == ".csv":
-                    df = pd.read_csv(BytesIO(raw), sep=None, engine="python", encoding=encoding, dtype=str).fillna("")
-                else:
-                    text = raw.decode(encoding, errors="replace")
-                    rows = [{"linea": str(i + 1), "texto": line.strip()} for i, line in enumerate(text.splitlines()) if line.strip()]
-                    return ["linea", "texto"], rows, "txt"
-                return [str(c) for c in df.columns], df.astype(str).head(1200).to_dict(orient="records"), "csv"
+                decoded_text = raw.decode(encoding, errors="replace")
             except Exception:
-                continue
-        raise HTTPException(status_code=400, detail=f"No se pudo leer {filename} como CSV/TXT")
+                decoded_text = ""
+            for separator in separators:
+                try:
+                    if suffix == ".tsv":
+                        separator = "\t"
+                    df = pd.read_csv(
+                        BytesIO(raw),
+                        sep=separator,
+                        engine="python",
+                        encoding=encoding,
+                        dtype=str,
+                    ).fillna("")
+                    df = df.dropna(axis=1, how="all")
+                    columns = [str(c).strip() for c in df.columns]
+                    data_columns = [c for c in columns if c and not c.lower().startswith("unnamed:")]
+                    if len(data_columns) >= 2 or suffix in {".csv", ".tsv"}:
+                        return columns, df.astype(str).head(1200).to_dict(orient="records"), "tsv" if separator == "\t" else "csv"
+                except Exception as exc:
+                    last_error = str(exc)
+                    continue
+            if suffix == ".txt" and decoded_text:
+                lines = [line.rstrip() for line in decoded_text.splitlines() if line.strip()]
+                if lines:
+                    sample = lines[:20]
+                    delimiter_scores = {
+                        "\t": sum(line.count("\t") for line in sample),
+                        ";": sum(line.count(";") for line in sample),
+                        ",": sum(line.count(",") for line in sample),
+                        "|": sum(line.count("|") for line in sample),
+                    }
+                    delimiter, score = max(delimiter_scores.items(), key=lambda item: item[1])
+                    if score:
+                        try:
+                            df = pd.read_csv(BytesIO(raw), sep=delimiter, engine="python", encoding=encoding, dtype=str).fillna("")
+                            columns = [str(c).strip() for c in df.columns]
+                            if len([c for c in columns if c]) >= 2:
+                                return columns, df.astype(str).head(1200).to_dict(orient="records"), "txt_tabular"
+                        except Exception as exc:
+                            last_error = str(exc)
+                    rows = [{"linea": str(i + 1), "texto": line.strip()} for i, line in enumerate(lines[:1200])]
+                    return ["linea", "texto"], rows, "txt"
+        raise HTTPException(status_code=400, detail=f"No se pudo leer {filename} como tabla CSV/TXT/TSV: {last_error or 'formato no reconocido'}")
     if suffix in {".xls", ".xlsx"}:
         from io import BytesIO
         import pandas as pd
 
         try:
-            df = pd.read_excel(BytesIO(raw), dtype=str).fillna("")
+            sheets = pd.read_excel(BytesIO(raw), sheet_name=None, dtype=str).items()
         except Exception as exc:
             raise HTTPException(status_code=400, detail=f"No se pudo leer {filename} como Excel: {exc}")
-        return [str(c) for c in df.columns], df.astype(str).head(1200).to_dict(orient="records"), "excel"
+        best_sheet = ""
+        best_df = pd.DataFrame()
+        best_score = -1
+        for sheet_name, sheet_df in sheets:
+            df = sheet_df.fillna("").dropna(axis=1, how="all")
+            columns = [str(c).strip() for c in df.columns]
+            meaningful_columns = [c for c in columns if c and not c.lower().startswith("unnamed:")]
+            non_empty_rows = int((df.astype(str).apply(lambda row: any(str(v).strip() for v in row), axis=1)).sum()) if not df.empty else 0
+            score = (len(meaningful_columns) * 1000) + non_empty_rows
+            if score > best_score:
+                best_sheet = str(sheet_name)
+                best_df = df
+                best_score = score
+        if best_df.empty or best_score <= 0:
+            raise HTTPException(status_code=400, detail=f"El Excel {filename} no contiene hojas tabulares con datos")
+        rows = best_df.astype(str).head(1200).to_dict(orient="records")
+        columns = [str(c) for c in best_df.columns]
+        return columns, rows, f"excel:{best_sheet}"
     if suffix == ".json":
         try:
             parsed = json.loads(raw.decode("utf-8-sig", errors="replace"))
@@ -4807,6 +4862,7 @@ def _network_import_analyze(raw: bytes, filename: str, evidence_type: str, saved
     imsi_col = _network_import_col(columns, "IMSI", "IMSI / MAC", "IMSI/MAC", "imsi_mac", "imsi mac")
     imei_col = _network_import_col(columns, "IMEI", "device_id", "device id", "imei_1", "imei_2")
     phone_col = _network_import_col(columns, "telefono", "teléfono", "phone", "msisdn", "celular")
+    entity_col = _network_import_col(columns, "identificador", "id", "id entidad", "entidad", "alias", "target", "objetivo id", "referencia")
     person_col = _network_import_col(columns, "nombre", "persona", "apellido y nombre", "apellidoynombre", "objetivo")
     place_col = _network_import_col(columns, "lugar", "lugar operativo", "complejo", "operacion", "op / evento", "op", "zona")
     model_col = _network_import_col(columns, "modelo", "model")
@@ -4817,6 +4873,7 @@ def _network_import_analyze(raw: bytes, filename: str, evidence_type: str, saved
         "imsi": imsi_col,
         "imei": imei_col,
         "phone": phone_col,
+        "entity": entity_col,
         "person": person_col,
         "place": place_col,
         "model": model_col,
@@ -4828,6 +4885,7 @@ def _network_import_analyze(raw: bytes, filename: str, evidence_type: str, saved
         imsi = _network_import_identity(row.get(imsi_col), exact_15=True) if imsi_col else ""
         imei = _network_import_identity(row.get(imei_col), exact_15=True) if imei_col else ""
         phone = _network_import_identity(row.get(phone_col), exact_15=False) if phone_col else ""
+        entity = str(row.get(entity_col) or "").strip() if entity_col else ""
         person = str(row.get(person_col) or "").strip() if person_col else ""
         place_raw = str(row.get(place_col) or "").strip() if place_col else ""
         place = _septier_place_bucket(place_raw) if place_raw else ""
@@ -4890,6 +4948,26 @@ def _network_import_analyze(raw: bytes, filename: str, evidence_type: str, saved
                 _network_import_edge(edges, f"{source_prefix}:imsi:{imsi}", imei_id, "imei_imsi", "IMSI asociado a IMEI", model)
             if place_node_id:
                 _network_import_edge(edges, imei_id, place_node_id, "visto_en", "IMEI visto en lugar", first_seen)
+        if entity:
+            entity_id = f"{source_prefix}:entity:{_norm_col(entity)[:80]}"
+            _network_import_node(
+                nodes,
+                entity_id,
+                "evidence",
+                entity,
+                subtitle="Entidad creada desde columna",
+                description=place_raw or model,
+                category="evidence",
+                source_label=filename,
+                coordinates=coords,
+                status_tags=["importado", "entidad", "propuesto"],
+                place=place,
+                first_seen=first_seen,
+                detections=1,
+            )
+            _network_import_edge(edges, file_node_id, entity_id, "detectado_en_archivo", "Entidad creada desde columna")
+            if place_node_id:
+                _network_import_edge(edges, entity_id, place_node_id, "asociado_a_lugar", "Entidad asociada a lugar", first_seen)
         if phone:
             phone_id = f"{source_prefix}:phone:{_norm_col(phone)[:40]}"
             _network_import_node(nodes, phone_id, "phone", phone, subtitle="Telefono / MSISDN", source_label=filename, detections=1)

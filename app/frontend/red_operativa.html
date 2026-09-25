@@ -16324,6 +16324,7 @@ Select module [0/1/7/8] (1): _</pre>
         imsi: "IMSI",
         imei: "IMEI",
         phone: "Telefono",
+        entity: "Entidad / nodo",
         person: "Persona / alias",
         place: "Lugar / operativo",
         source: "Fuente / origen",
@@ -16345,7 +16346,7 @@ Select module [0/1/7/8] (1): _</pre>
     }
 
     function networkImportRoleOptions(selectedRole) {
-      const roles = ["ignore", "imsi", "imei", "phone", "person", "place", "source", "time", "model", "lat", "lon", "note"];
+      const roles = ["ignore", "entity", "imsi", "imei", "phone", "person", "place", "source", "time", "model", "lat", "lon", "note"];
       return roles.map((role) => `<option value="${escapeAttr(role)}" ${role === selectedRole ? "selected" : ""}>${escapeHtml(networkImportRoleLabel(role))}</option>`).join("");
     }
 
@@ -16437,6 +16438,7 @@ Select module [0/1/7/8] (1): _</pre>
         const imsi = networkImportDigits(networkImportValue(row, mapping.imsi), true);
         const imei = networkImportDigits(networkImportValue(row, mapping.imei), true);
         const phone = networkImportDigits(networkImportValue(row, mapping.phone), false);
+        const genericEntity = networkImportValue(row, mapping.entity);
         const person = networkImportValue(row, mapping.person);
         const place = networkImportValue(row, mapping.place);
         const source = networkImportValue(row, mapping.source) || sourceName;
@@ -16503,6 +16505,25 @@ Select module [0/1/7/8] (1): _</pre>
           addEdge(fileId, imeiId, "detectado_en_archivo", "Entidad detectada en archivo");
           if (imsiId) addEdge(imsiId, imeiId, "imei_imsi", "IMSI asociado a IMEI", model || note);
           if (placeId) addEdge(imeiId, placeId, "visto_en", "IMEI visto en lugar", firstSeen);
+        }
+        if (genericEntity) {
+          const entityId = `${prefix}:entity:${networkImportSafeId(genericEntity)}`;
+          addNode({
+            id: entityId,
+            type: "evidence",
+            label: genericEntity,
+            subtitle: "Entidad creada desde columna",
+            description: note || place || model,
+            source_label: source,
+            coordinates: coords,
+            status_tags: ["importado", "entidad", "mapeo_manual"],
+            category: "evidence",
+            place,
+            first_seen: firstSeen,
+            detections: 1,
+          });
+          addEdge(fileId, entityId, "detectado_en_archivo", "Entidad creada desde columna");
+          if (placeId) addEdge(entityId, placeId, "asociado_a_lugar", "Entidad asociada a lugar", firstSeen);
         }
         let phoneId = "";
         if (phone) {
