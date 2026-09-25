@@ -6134,9 +6134,9 @@ Select module [0/1/7/8] (1): _</pre>
                 <div class="network-stage-label">Herramientas de armado</div>
                 <div class="network-controls">
                   <select id="networkSource">
-                    <option value="">Guardian y Backpack</option>
-                    <option value="guardian">Solo Guardian / UC</option>
-                    <option value="backpack">Solo Backpack / BP</option>
+                    <option value="">Todos los archivos</option>
+                    <option value="guardian">Solo set principal</option>
+                    <option value="backpack">Solo set secundario</option>
                   </select>
                   <select id="networkPlace">
                     <option value="">Todos los lugares</option>
@@ -18252,9 +18252,9 @@ Select module [0/1/7/8] (1): _</pre>
       const help = document.getElementById("networkEvidenceHelp");
       if (help) {
         const messages = {
-          all: "Fuente activa: Guardian + Backpack. Si marcas histories puntuales, se usaran solo esos archivos.",
-          guardian: "Fuente activa: Guardian / UC. Puedes seleccionar histories especificos para una red controlada.",
-          backpack: "Fuente activa: Backpack / BP. Puedes seleccionar histories especificos para una red controlada.",
+          all: "Fuente activa: todos los archivos subidos o trabajados. Si marcas archivos puntuales, se usaran solo esos elementos.",
+          guardian: "Fuente activa: set principal. Puedes seleccionar archivos especificos para una red controlada.",
+          backpack: "Fuente activa: set secundario. Puedes seleccionar archivos especificos para una red controlada.",
           unauthorized: "Fuente activa: no coincidentes. Se cruza Lista Blanca y se priorizan identidades sin coincidencia."
         };
         help.textContent = messages[active] || messages.all;
@@ -18276,8 +18276,8 @@ Select module [0/1/7/8] (1): _</pre>
         setNetworkCheckbox(networkOnlyUnauthorizedEl, false);
         openNetworkStudioDrawer("evidence");
         if (networkModeStatusEl) {
-          const label = value === "guardian" ? "Guardian / UC" : value === "backpack" ? "Backpack / BP" : "Guardian + Backpack";
-          networkModeStatusEl.textContent = `Evidencia activa: ${label}. Selecciona histories puntuales o genera la red con filtros.`;
+          const label = value === "guardian" ? "set principal" : value === "backpack" ? "set secundario" : "todos los archivos";
+          networkModeStatusEl.textContent = `Archivos activos: ${label}. Selecciona elementos puntuales o genera la red con filtros.`;
         }
       }
       updateNetworkEvidenceBoard();
@@ -19139,7 +19139,7 @@ Select module [0/1/7/8] (1): _</pre>
       const trayTabs = document.createElement("div");
       trayTabs.className = "network-lab-tray-tabs";
       trayTabs.innerHTML = `
-        <button type="button" class="network-lab-tray-tab active" data-network-tray-tab="evidence"><strong>Evidencia</strong><span id="networkTrayEvidenceCount">0</span></button>
+        <button type="button" class="network-lab-tray-tab active" data-network-tray-tab="evidence"><strong>Archivos</strong><span id="networkTrayEvidenceCount">0</span></button>
         <button type="button" class="network-lab-tray-tab" data-network-tray-tab="relations"><strong>Relaciones</strong><span id="networkTrayRelationsCount">0</span></button>
         <button type="button" class="network-lab-tray-tab" data-network-tray-tab="filters"><strong>Filtros</strong><span id="networkTrayFiltersCount">0</span></button>
         <button type="button" class="network-lab-tray-tab" data-network-tray-tab="case"><strong>Expediente</strong><span id="networkTrayCaseCount">0</span></button>`;
@@ -19319,29 +19319,29 @@ Select module [0/1/7/8] (1): _</pre>
       evidenceBoard.id = "networkEvidenceBoard";
       evidenceBoard.innerHTML = `
         <button type="button" class="network-evidence-card active" data-network-evidence="all">
-          <strong>Guardian + BP</strong>
+          <strong>Archivos trabajados</strong>
           <span class="network-evidence-count" id="networkEvidenceAllCount">0</span>
-          <span>Usar toda la evidencia Septier disponible o la seleccion manual.</span>
+          <span>Usa todos los archivos subidos o la seleccion manual del analista.</span>
         </button>
         <button type="button" class="network-evidence-card" data-network-evidence="guardian">
-          <strong>Guardian / UC</strong>
+          <strong>Set principal</strong>
           <span class="network-evidence-count" id="networkEvidenceGuardianCount">0</span>
-          <span>Prioriza histories del sistema Guardian.</span>
+          <span>Prioriza archivos cargados como fuente principal.</span>
         </button>
         <button type="button" class="network-evidence-card" data-network-evidence="backpack">
-          <strong>Backpack / BP</strong>
+          <strong>Set secundario</strong>
           <span class="network-evidence-count" id="networkEvidenceBackpackCount">0</span>
-          <span>Prioriza histories levantados con Backpack.</span>
+          <span>Prioriza archivos cargados como fuente complementaria.</span>
         </button>
         <button type="button" class="network-evidence-card warning" data-network-evidence="unauthorized">
-          <strong>No coincidentes</strong>
+          <strong>Lista blanca</strong>
           <span class="network-evidence-count" id="networkEvidenceUnauthorizedCount">LB</span>
-          <span>Cruza Lista Blanca y enfoca identidades a revisar.</span>
+          <span>Enfoca identidades no coincidentes para revisar.</span>
         </button>`;
       const evidenceHelp = document.createElement("div");
       evidenceHelp.className = "network-evidence-help";
       evidenceHelp.id = "networkEvidenceHelp";
-      evidenceHelp.textContent = "Selecciona una fuente, visualiza histories si necesitas elegir archivos puntuales, y recien despues genera la red.";
+      evidenceHelp.textContent = "Selecciona archivos subidos o trabajados, revisa la muestra y recien despues genera la red.";
       const chatNote = document.createElement("div");
       chatNote.className = "network-lab-chat-note";
       chatNote.id = "networkScenarioChat";
@@ -19547,7 +19547,7 @@ Select module [0/1/7/8] (1): _</pre>
       append(left, leftResizer);
 
       append(tray, trayTabs);
-      append(tray, drawer("Histories y evidencia", [evidenceBoard, evidenceHelp, buildControls, filesControls, filesList], true, "evidence"));
+      append(tray, drawer("Archivos subidos / trabajados", [evidenceBoard, evidenceHelp, buildControls, filesControls, filesList], true, "evidence"));
       append(tray, drawer("Relaciones y tabla tecnica", [relationControls, edgesDetails], false, "relations"));
       append(tray, drawer("Filtros y capas", [entityFilterControls, cardControls, layerControls], false, "filters"));
       append(tray, drawer("Expediente y equipo", [caseControls, caseSeal, casesList, taskAlert, shareControls, tasksList, collabPanel, chatNote], false, "case"));
