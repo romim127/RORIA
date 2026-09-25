@@ -4392,32 +4392,51 @@
       overflow-x: visible;
       padding-right: 10px;
       position: relative;
+      scrollbar-color: rgba(13, 54, 88, 0.36) transparent;
+      scrollbar-width: thin;
     }
     body.red-operativa-app .network-lab-resizer {
       align-items: center;
-      background: linear-gradient(180deg, #ffffff, #dceaf5);
-      border: 1px solid rgba(15, 54, 89, 0.22);
-      border-radius: 999px;
-      box-shadow: 0 6px 16px rgba(15, 38, 62, 0.16);
+      background: rgba(13, 54, 88, 0.10);
+      border: 0;
+      border-radius: 8px;
+      box-shadow: none;
       color: #0d3658;
       cursor: col-resize;
       display: flex;
-      font-size: 13px;
+      font-size: 0;
       font-weight: 900;
-      height: 58px;
+      height: 64px;
       justify-content: center;
+      min-width: 0 !important;
+      opacity: 0.38;
+      padding: 0 !important;
       position: absolute;
-      right: -8px;
+      right: -5px;
       top: 48%;
       transform: translateY(-50%);
-      width: 16px;
+      width: 8px !important;
       z-index: 25;
+    }
+    body.red-operativa-app .network-lab-resizer::before {
+      content: "›";
+      font-size: 15px;
+      line-height: 1;
+      opacity: 0;
+      transform: rotate(0deg);
+      transition: opacity 0.12s ease;
     }
     body.red-operativa-app .network-lab-resizer:hover,
     body.red-operativa-app .network-lab-resizer.dragging {
       background: #0aa8d8;
       border-color: #13d7ff;
       color: #ffffff;
+      opacity: 1;
+      width: 16px !important;
+    }
+    body.red-operativa-app .network-lab-resizer:hover::before,
+    body.red-operativa-app .network-lab-resizer.dragging::before {
+      opacity: 1;
     }
     body.red-operativa-app .network-lab-palette .network-controls,
     body.red-operativa-app .network-lab-palette .network-manual-grid,
@@ -4427,7 +4446,7 @@
     body.red-operativa-app .network-lab-palette input,
     body.red-operativa-app .network-lab-palette select,
     body.red-operativa-app .network-lab-palette textarea,
-    body.red-operativa-app .network-lab-palette button {
+    body.red-operativa-app .network-lab-palette button:not(.network-lab-resizer) {
       max-width: 100%;
       min-width: 0;
       width: 100%;
@@ -4456,6 +4475,68 @@
     body.red-operativa-app .network-lab-palette #networkUniversalStageBtn,
     body.red-operativa-app .network-lab-palette #networkUniversalApplyBtn {
       min-height: 42px;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-options {
+      align-items: stretch;
+      background: #ffffff;
+      border-color: rgba(18, 116, 180, 0.26);
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-options strong {
+      color: #0d3658;
+      font-size: 11px;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-options label {
+      align-items: center;
+      background: #f3f8fc;
+      border: 1px solid rgba(15, 54, 89, 0.10);
+      border-radius: 5px;
+      color: #0d2235;
+      display: grid;
+      font-size: 12px;
+      gap: 8px;
+      grid-template-columns: auto 1fr;
+      justify-content: start;
+      min-height: 30px;
+      padding: 5px 8px;
+      width: 100%;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-options input[type="checkbox"] {
+      height: 16px;
+      margin: 0;
+      width: 16px;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-review-card {
+      background: #ffffff;
+      border-color: rgba(18, 116, 180, 0.24);
+      color: #0d2235;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-review-card strong {
+      color: #0d3658;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-review-card .text-muted,
+    body.red-operativa-app .network-lab-palette .network-import-column-sample {
+      color: #53687b;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-column-name {
+      color: #0d2235;
+    }
+    body.red-operativa-app .network-lab-palette .network-import-chip {
+      background: #eef7ff;
+      border-color: rgba(18, 116, 180, 0.24);
+      color: #0d3658;
+    }
+    body.red-operativa-app .network-lab-palette::-webkit-scrollbar,
+    body.red-operativa-app .network-lab-palette *::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    body.red-operativa-app .network-lab-palette::-webkit-scrollbar-thumb,
+    body.red-operativa-app .network-lab-palette *::-webkit-scrollbar-thumb {
+      background: rgba(13, 54, 88, 0.28);
+      border-radius: 999px;
     }
     body.red-operativa-app .network-lab-palette,
     body.red-operativa-app .network-lab-inspector {
